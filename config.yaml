@@ -1,0 +1,5 @@
+assistant:
+  name: "JARVIS"
+
+logging:
+  level: "INFO"
