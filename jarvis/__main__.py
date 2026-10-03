@@ -3,7 +3,7 @@ from jarvis.core.assistant import Assistant
 
 
 def main() -> None:
-    Assistant().greet()
+    Assistant().run()
 
 
 if __name__ == "__main__":
