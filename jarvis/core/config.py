@@ -8,7 +8,9 @@ log = logging.getLogger(__name__)
 DEFAULTS = {
     "assistant": {"name": "JARVIS", "version": "0.1.0"},
     "logging": {"level": "INFO"},
+    "router": {"confidence_threshold": 0.6},
 }
+
 
 
 def _deep_update(base: dict, override: dict) -> dict:

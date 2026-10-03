@@ -1,6 +1,8 @@
 """The assistant shell. Later phases plug the router, skills,
 memory, and voice into this — the entry point never changes."""
 import logging
+from jarvis.core.router import route
+
 
 from jarvis.core.config import load_config
 from jarvis.core.logger import setup_logging
@@ -24,18 +26,26 @@ class Assistant:
         print(f"{self.name}: At your service.")
 
     def run(self) -> None:
-        """Read-Eval-Print Loop: read input, (soon: route it), print result."""
+        """Read-Eval-Print Loop: read input, route it, print the result."""
         self.greet()
+        threshold = self.config["router"]["confidence_threshold"]
         while True:
             try:
                 text = input("You: ").strip()
             except (EOFError, KeyboardInterrupt):
-                print()  # tidy newline after Ctrl+C / Ctrl+Z
+                print()
                 break
             if not text:
                 continue
             if text.lower() in EXIT_WORDS:
                 print(f"{self.name}: Goodbye.")
                 break
-            # Step 5 builds the router; echo for now to prove the loop works.
-            print(f"{self.name}: (router coming soon — you said {text!r})")
+            skill, confidence = route(text, threshold)
+            if skill is None:
+                print(f"{self.name}: I don't understand that yet.")
+                log.info("No skill matched for %r", text)
+                continue
+            log.info("Routed %r -> %s (confidence=%.2f)", text, skill.name, confidence)
+            result = skill.handle(text)
+            print(f"{self.name}: {result.message}")
+

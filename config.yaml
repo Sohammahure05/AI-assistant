@@ -3,3 +3,6 @@ assistant:
 
 logging:
   level: "INFO"
+
+router:
+  confidence_threshold: 0.6
