@@ -6,3 +6,5 @@ logging:
 
 router:
   confidence_threshold: 0.6
+  method: "keyword"          # switch to "semantic" for the upgrade
+  model_name: "all-MiniLM-L6-v2"

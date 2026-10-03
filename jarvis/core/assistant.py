@@ -2,6 +2,7 @@
 memory, and voice into this — the entry point never changes."""
 import logging
 from jarvis.core.router import route
+from functools import partial
 
 
 from jarvis.core.config import load_config
@@ -20,7 +21,23 @@ class Assistant:
         self.name = self.config["assistant"]["name"]
         discover_skills()
         log.info("Discovered skills: %s", sorted(REGISTRY))
+        discover_skills()
+        self._router = self._build_router()
+
         log.info("%s initialised.", self.name)
+
+    def _build_router(self):
+        """Pick the routing strategy from config; default is keyword."""
+        method = self.config["router"].get("method", "keyword")
+        if method == "semantic":
+            from jarvis.core.semantic_router import semantic_route
+            model_name = self.config["router"].get("model_name", "all-MiniLM-L6-v2")
+            log.info("Using semantic router (%s)", model_name)
+            return partial(semantic_route, model_name=model_name)
+        from jarvis.core.router import route
+        log.info("Using keyword router")
+        return route
+
 
     def greet(self) -> None:
         print(f"{self.name}: At your service.")
@@ -40,7 +57,8 @@ class Assistant:
             if text.lower() in EXIT_WORDS:
                 print(f"{self.name}: Goodbye.")
                 break
-            skill, confidence = route(text, threshold)
+            skill, confidence = self._router(text, threshold)
+
             if skill is None:
                 print(f"{self.name}: I don't understand that yet.")
                 log.info("No skill matched for %r", text)
