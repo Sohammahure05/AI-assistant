@@ -21,7 +21,6 @@ class Assistant:
         self.name = self.config["assistant"]["name"]
         discover_skills()
         log.info("Discovered skills: %s", sorted(REGISTRY))
-        discover_skills()
         self._router = self._build_router()
 
         log.info("%s initialised.", self.name)
