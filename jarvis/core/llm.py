@@ -38,3 +38,13 @@ class LLMClient:
             **kwargs,
         )
         return resp.choices[0].message.content
+
+    def choose_tool(self, messages, tools):
+        """Ask the LLM to pick a skill via tool calling. Returns raw tool_calls."""
+        response = self._client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+        )
+        return response.choices[0].message.tool_calls
