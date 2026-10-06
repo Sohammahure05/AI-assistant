@@ -8,3 +8,8 @@ router:
   confidence_threshold: 0.6
   method: "semantic"          # switch to "semantic" for the upgrade
   model_name: "all-MiniLM-L6-v2"
+
+llm:
+  provider: "groq"
+  model: "openai/gpt-oss-20b"
+  temperature: 0.2
