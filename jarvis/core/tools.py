@@ -6,7 +6,7 @@ from the registry. Add a skill, and the LLM can call it with
 zero extra wiring.
 """
 
-from jarvis.skills import REGISTRY
+from jarvis.skills import REGISTRY, discover_skills
   
 
 
@@ -31,5 +31,6 @@ def skill_to_tool(skill_cls) -> dict:
 
 def build_tools() -> list[dict]:
     """Build tool schemas for every registered skill."""
+    discover_skills()  # ensure registry is populated; safe to repeat
     return [skill_to_tool(cls) for cls in REGISTRY.values()]
 
